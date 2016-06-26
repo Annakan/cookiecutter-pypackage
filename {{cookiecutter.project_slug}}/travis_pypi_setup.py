@@ -21,7 +21,7 @@ except:
     from urllib.request import urlopen
 
 
-GITHUB_REPO = '{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}'
+GIT_REPO = '{{ cookiecutter.git_username }}/{{ cookiecutter.project_slug }}'
 TRAVIS_CONFIG_FILE = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), '.travis.yml')
 
@@ -113,8 +113,8 @@ def main(args):
 if '__main__' == __name__:
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--repo', default=GITHUB_REPO,
-                        help='GitHub repo (default: %s)' % GITHUB_REPO)
+    parser.add_argument('--repo', default=GIT_REPO,
+                        help='GitHub repo (default: %s)' % GIT_REPO)
     parser.add_argument('--password',
                         help='PyPI password (will prompt if not provided)')
 
