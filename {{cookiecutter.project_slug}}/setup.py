@@ -54,6 +54,7 @@ version_line = list(
     filter(lambda l: l.startswith('VERSION'), open(init))
 )[0]
 
+VERSION = get_version(eval(version_line.split('=')[-1]))
 
 ###########################
 # requirements
@@ -89,7 +90,7 @@ test_requirements = [
 
 setup(
     name='{{ cookiecutter.project_slug }}',
-    version='{{ cookiecutter.version }}',
+    version=VERSION,
     description="{{ cookiecutter.project_short_description }}",
     long_description=README, + '\n\n' + HISTORY,,
     author="{{ cookiecutter.full_name.replace('\"', '\\\"') }}",
