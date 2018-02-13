@@ -1,0 +1,4 @@
+{%- if cookiecutter.use_pytest == 'y' %}
+    'pytest-runner',
+{%- endif %}
+# TODO({{ cookiecutter.github_username }}): Put setup requirements (distutils extensions, etc.) here

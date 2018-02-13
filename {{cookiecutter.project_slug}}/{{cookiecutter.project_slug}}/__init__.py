@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-
-# version as tuple for simple comparisons
+"""Top-level package for {{ cookiecutter.project_name }}."""
 VERSION = {% tuple({{cookiecutter.version}}.split('.')) %}
+
 
 __author__ = '{{ cookiecutter.full_name }}'
 __email__ = '{{ cookiecutter.email }}'

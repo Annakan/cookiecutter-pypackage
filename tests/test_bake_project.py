@@ -101,6 +101,13 @@ def test_bake_withspecialchars_and_run_tests(cookies):
         run_inside_dir('python setup.py test', str(result.project)) == 0
 
 
+def test_bake_with_apostrophe_and_run_tests(cookies):
+    """Ensure that a `full_name` with apostrophes does not break setup.py"""
+    with bake_in_temp_dir(cookies, extra_context={'full_name': "O'connor"}) as result:
+        assert result.project.isdir()
+        run_inside_dir('python setup.py test', str(result.project)) == 0
+
+
 def test_bake_and_run_travis_pypi_setup(cookies):
     # given:
     with bake_in_temp_dir(cookies) as result:
@@ -132,10 +139,15 @@ def test_bake_without_author_file(cookies):
         doc_files = [f.basename for f in result.project.join('docs').listdir()]
         assert 'authors.rst' not in doc_files
 
-        # Asset there are no spaces in the toc tree
+        # Assert there are no spaces in the toc tree
         docs_index_path = result.project.join('docs/index.rst')
         with open(str(docs_index_path)) as index_file:
             assert 'contributing\n   history' in index_file.read()
+
+        # Check that
+        manifest_path = result.project.join('MANIFEST.in')
+        with open(str(manifest_path)) as manifest_file:
+            assert 'AUTHORS.rst' not in manifest_file.read()
 
 
 def test_make_help(cookies):
@@ -172,6 +184,10 @@ def test_using_pytest(cookies):
         test_file_path = result.project.join('tests/test_python_boilerplate.py')
         lines = test_file_path.readlines()
         assert "import pytest" in ''.join(lines)
+        # Test the new pytest target
+        run_inside_dir('python setup.py pytest', str(result.project)) == 0
+        # Test the test alias (which invokes pytest)
+        run_inside_dir('python setup.py test', str(result.project)) == 0
 
 
 def test_not_using_pytest(cookies):
@@ -183,10 +199,9 @@ def test_not_using_pytest(cookies):
         assert "import pytest" not in ''.join(lines)
 
 
-def test_project_with_invalid_module_name(cookies):
+def test_project_with_hyphen_in_module_name(cookies):
     result = cookies.bake(extra_context={'project_name': 'something-with-a-dash'})
-    assert result.project is None
-    result = cookies.bake()
+    assert result.project is not None
     project_path = str(result.project)
 
     # when:

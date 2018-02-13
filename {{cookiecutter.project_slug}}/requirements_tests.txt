@@ -1,0 +1,4 @@
+{%- if cookiecutter.use_pytest == 'y' %}
+    'pytest',
+{%- endif %}
+# TODO: Put package test requirements here

@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""The setup script."""
 from setuptools import setup
 import os
+
+PACKAGE_NAME = cookiecutter.project_slug
+
 
 ###########################
 # Readme and longdesc
 ###########################
 try:
     from pypandoc import convert
-
 
     def read_md(f):
         return convert(f, 'rst')
@@ -27,7 +30,7 @@ def file_path(filename):
 
 README = read_md(file_path('README.md'))
 hist_fn = file_path('HISTORY.rst')
-HISTORY =  hist_fn if os.path.exists(hist_fn) else read_md(file_path('HISTORY.md'))
+history =  hist_fn if os.path.exists(hist_fn) else read_md(file_path('HISTORY.md'))
 
 
 ###########################
@@ -46,10 +49,7 @@ def get_version(version_tuple):
 
 # path to the packages __init__ module in project
 # source tree
-init = os.path.join(
-    os.path.dirname(__file__), 'frsdemo',
-    '__init__.py'
-)
+init = os.path.join(os.path.dirname(__file__), PACKAGE_NAME, '__init__.py')
 version_line = list(
     filter(lambda l: l.startswith('VERSION'), open(init))
 )[0]
@@ -69,32 +69,29 @@ def reqs(*f):
         os.path.join(os.getcwd(), *f)).readlines()]))
 
 
-requirements = [
-    {%- if cookiecutter.command_line_interface|lower == 'click' %}
-    'Click>=6.0',
-    {%- endif %}
+requirements = reqs('requirements.txt')
 
-].append(reqs('requirements.txt'))
+setup_requirements = reqs('requirements_setup.txt')
 
-test_requirements = [
-    # TODO: put package test requirements here
-]
+test_requirements = reqs('requirements_tests.txt')
 
 {%- set license_classifiers = {
     'MIT license': 'License :: OSI Approved :: MIT License',
     'BSD license': 'License :: OSI Approved :: BSD License',
     'ISC license': 'License :: OSI Approved :: ISC License (ISCL)',
     'Apache Software License 2.0': 'License :: OSI Approved :: Apache Software License',
-    'GNU General Public License v3': 'License :: OSI Approved :: GNU General Public License'
+    'GNU General Public License v3': 'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
 } %}
 
 setup(
     name='{{ cookiecutter.project_slug }}',
     version=VERSION,
     description="{{ cookiecutter.project_short_description }}",
-    long_description=README, + '\n\n' + HISTORY,,
+    long_description=readme + '\n\n' + history,
     author="{{ cookiecutter.full_name.replace('\"', '\\\"') }}",
     author_email='{{ cookiecutter.email }}',
+    url='https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}',
+    packages=find_packages(include=['{{ cookiecutter.project_slug }}']),
     # url='https://github.com/{{ cookiecutter.git_username }}/{{ cookiecutter.project_slug }}',
     packages=[
         '{{ cookiecutter.project_slug }}',
@@ -104,8 +101,8 @@ setup(
     {%- if 'no' not in cookiecutter.command_line_interface|lower %}
     entry_points={
         'console_scripts': [
-            '{{ cookiecutter.project_slug }}={{ cookiecutter.project_slug }}.cli:main'
-        ]
+            '{{ cookiecutter.project_slug }}={{ cookiecutter.project_slug }}.cli:main',
+        ],
     },
     {%- endif %}
     include_package_data=True,
@@ -123,13 +120,13 @@ setup(
 {%- endif %}
         'Natural Language :: English',
         "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     test_suite='tests',
-    tests_require=test_requirements
+    tests_require=test_requirements,
+    setup_requires=setup_requirements,
 )
