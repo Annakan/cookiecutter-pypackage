@@ -3,9 +3,10 @@
 
 """The setup script."""
 from setuptools import setup, find_packages
+
 import os
 
-PACKAGE_NAME = {{ cookiecutter.project_slug }}
+PACKAGE_NAME = '{{ cookiecutter.project_slug }}'
 
 
 ###########################
@@ -28,7 +29,7 @@ except ImportError:
 def file_path(filename):
     return os.path.join(os.path.dirname(__file__), filename)
 
-README = read_md(file_path('README.md'))
+readme = read_md(file_path('README.md')) if os.path.exists('README.md') else read_md('README.rst')
 hist_fn = file_path('HISTORY.rst')
 history =  hist_fn if os.path.exists(hist_fn) else read_md(file_path('HISTORY.md'))
 
@@ -60,20 +61,34 @@ VERSION = get_version(eval(version_line.split('=')[-1]))
 # requirements
 ###########################
 
+#see https://caremad.io/posts/2013/07/setup-vs-requirement/
+#and https://packaging.python.org/discussions/install-requires-vs-requirements/
+
 def strip_comments(l):
     return l.split('#', 1)[0].strip()
 
 
-def reqs(*f):
-    return list(filter(None, [strip_comments(l) for l in open(
-        os.path.join(os.getcwd(), *f)).readlines()]))
+requirements = [
+    {%- if cookiecutter.command_line_interface|lower == 'click' %}
+    'Click',
+    {%- endif %}
+    # TODO: Put package requirements here
+]
 
+setup_requirements = [
+{%- if cookiecutter.use_pytest == 'y' %}
+    'pytest-runner',
+{%- endif %}
+# TODO ({{ cookiecutter.git_username }}): Put setup requirements (distutils extensions, etc.) here
+]
 
-requirements = reqs('requirements.txt')
+test_requirements = [
+{%- if cookiecutter.use_pytest == 'y' %}
+    'pytest',
+{%- endif %}
+# TODO: Put package test requirements here
+]
 
-setup_requirements = reqs('requirements_setup.txt')
-
-test_requirements = reqs('requirements_tests.txt')
 
 {%- set license_classifiers = {
     'MIT license': 'License :: OSI Approved :: MIT License',

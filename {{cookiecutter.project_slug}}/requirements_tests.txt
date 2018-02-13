@@ -1,4 +1,4 @@
 {%- if cookiecutter.use_pytest == 'y' %}
-    'pytest',
+pytest
 {%- endif %}
-# TODO: Put package test requirements here
+# TODO ({{ cookiecutter.git_username }}): Put package test requirements here

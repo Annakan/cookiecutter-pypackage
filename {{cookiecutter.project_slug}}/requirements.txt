@@ -1,3 +1,4 @@
 {%- if cookiecutter.command_line_interface|lower == 'click' %}
-'Click>=6.0',
+Click>=6.0
 {%- endif %}
+zest.releaser
