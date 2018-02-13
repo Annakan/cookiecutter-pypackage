@@ -5,7 +5,7 @@
 from setuptools import setup, find_packages
 import os
 
-PACKAGE_NAME = cookiecutter.project_slug
+PACKAGE_NAME = {{ cookiecutter.project_slug }}
 
 
 ###########################
